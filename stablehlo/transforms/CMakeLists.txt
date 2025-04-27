@@ -19,6 +19,10 @@ set(LLVM_TARGET_DEFINITIONS Passes.td)
 mlir_tablegen(Passes.h.inc -gen-pass-decls)
 add_public_tablegen_target(PassesIncGen)
 
+set(LLVM_TARGET_DEFINITIONS PassesExt.td)
+mlir_tablegen(PassesExt.h.inc -gen-pass-decls)
+add_public_tablegen_target(PassesExtIncGen)
+
 set(LLVM_TARGET_DEFINITIONS ChloDecompositionPatterns.td)
 mlir_tablegen(ChloDecompositionPatterns.h.inc --gen-rewriters)
 add_public_tablegen_target(ChloDecompositionPatternsIncGen)
@@ -91,6 +95,37 @@ add_mlir_dialect_library(StablehloPasses
   StablehloLinalgTransforms
   StablehloOps
   StablehloOptimizationPasses
+  StablehloTypeInference
+  VhloOps
+)
+
+add_mlir_dialect_library(StablehloPassesExt
+  PARTIAL_SOURCES_INTENDED
+  RemoveUnusedBroadcast.cpp
+  FuseTransposeReshapeTranspose.cpp
+  IotaToConstantPattern.cpp
+
+  DEPENDS
+  PassesExtIncGen
+
+  LINK_LIBS PUBLIC
+  ChloOps
+  InterpreterOps
+  MLIRArithDialect
+  MLIRAsmParser
+  MLIRComplexDialect
+  MLIRDialectUtils
+  MLIRFuncDialect
+  MLIRFunctionInterfaces
+  MLIRIR
+  MLIRInferTypeOpInterface
+  MLIRQuantDialect
+  MLIRSupport
+  MLIRTensorDialect
+  MLIRTransformUtils
+  StablehloBase
+  StablehloBroadcastUtils
+  StablehloOps
   StablehloTypeInference
   VhloOps
 )

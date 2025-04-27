@@ -16,6 +16,7 @@
 set(LLVM_OPTIONAL_SOURCES
   StablehloLspServerMain.cpp
   StablehloOptMain.cpp
+  StablehloExtOptMain.cpp
   StablehloTranslateMain.cpp
   Interpreter.cpp
 )
@@ -32,6 +33,7 @@ set(LIBS
         StablehloRegister
         StablehloTestUtils
         StablehloPasses
+        StablehloPassesExt
         CheckOps
         InterpreterOps
         InterpreterPasses
@@ -43,6 +45,13 @@ llvm_update_compile_flags(stablehlo-opt)
 target_link_libraries(stablehlo-opt PRIVATE ${LIBS})
 
 mlir_check_all_link_libraries(stablehlo-opt)
+
+# stablehlo-ext-opt
+add_llvm_executable(stablehlo-ext-opt StablehloExtOptMain.cpp)
+llvm_update_compile_flags(stablehlo-ext-opt)
+target_link_libraries(stablehlo-ext-opt PRIVATE ${LIBS})
+
+mlir_check_all_link_libraries(stablehlo-ext-opt)
 
 # stablehlo-translate
 add_llvm_executable(stablehlo-translate StablehloTranslateMain.cpp)
