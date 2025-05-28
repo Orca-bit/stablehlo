@@ -114,7 +114,7 @@ struct ConvertIotaToConstantPass final
   }
 
   void runOnOperation() override {
-    if (failed(applyPatternsAndFoldGreedily(getOperation(), patterns))) {
+    if (failed(applyPatternsGreedily(getOperation(), patterns))) {
       return signalPassFailure();
     }
   }

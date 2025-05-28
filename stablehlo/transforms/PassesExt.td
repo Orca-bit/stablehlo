@@ -33,3 +33,34 @@ def ConvertIotaToConstantPass : Pass<"convert-iota-to-constant", "mlir::func::Fu
   }];
   let dependentDialects = ["mlir::stablehlo::StablehloDialect"];
 }
+
+def OutlineMainFunctionPass : Pass<"outline-main-function", "mlir::func::FuncOp"> {
+  let summary = "Outline the main function into smaller callable functions";
+  let description = [{
+    This pass identifies the main function (typically 'main') and outlines its body
+    into smaller, potentially device-specific functions. Each outlined function
+    can then be targeted for kernel generation by the compiler backend.
+    This facilitates modular compilation and potential parallel execution.
+  }];
+  let dependentDialects = ["mlir::stablehlo::StablehloDialect", "mlir::func::FuncDialect"];
+}
+
+def SimplifyReshapeReducePass : Pass<"simplify-reshape-reduce", "mlir::func::FuncOp"> {
+  let summary = "Simplify ineffective reshape+reduce patterns";
+  let description = [{
+    This pass identifies and simplifies ineffective reshape+reduce operation patterns.
+    It looks for sequences where a reshape operation is immediately followed by a reduce
+    operation, and determines if the reshape can be eliminated without affecting the
+    final result.
+    
+    For example:
+    - reshape(tensor<100x64xf32>) -> tensor<100x1x64xf32> followed by 
+      reduce(dims=[1]) can be simplified by removing the reshape entirely
+    - reshape operations that only add dimensions of size 1 that are immediately
+      reduced can be eliminated
+    
+    This optimization reduces memory usage and computational overhead by eliminating
+    unnecessary tensor shape transformations before reduction operations.
+  }];
+  let dependentDialects = ["mlir::stablehlo::StablehloDialect"];
+}

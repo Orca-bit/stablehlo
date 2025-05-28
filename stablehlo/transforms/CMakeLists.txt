@@ -104,6 +104,8 @@ add_mlir_dialect_library(StablehloPassesExt
   RemoveUnusedBroadcast.cpp
   FuseTransposeReshapeTranspose.cpp
   IotaToConstantPattern.cpp
+  OutlineMainFunction.cpp
+  SimplifyReshapeReduce.cpp
 
   DEPENDS
   PassesExtIncGen

@@ -19,6 +19,9 @@ void populateFuseTransposeReshapeTransposePatterns(MLIRContext *context,
 void populateIotaToConstantPatterns(MLIRContext *context,
                                      RewritePatternSet *patterns);
 
+void populateSimplifyReshapeReducePatterns(MLIRContext *context,
+                                            RewritePatternSet *patterns);
+
 }  // namespace stablehlo_ext
 }  // namespace mlir
 
