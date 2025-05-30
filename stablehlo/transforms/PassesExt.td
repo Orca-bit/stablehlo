@@ -64,3 +64,22 @@ def SimplifyReshapeReducePass : Pass<"simplify-reshape-reduce", "mlir::func::Fun
   }];
   let dependentDialects = ["mlir::stablehlo::StablehloDialect"];
 }
+
+def ConvertGatherIndexTypePass : Pass<"convert-gather-index-type", "mlir::func::FuncOp"> {
+  let summary = "Convert gather index types from unsigned to signed integers";
+  let description = [{
+    This pass converts the index input types of stablehlo.gather operations from
+    unsigned integer types to their corresponding signed integer types:
+    - uint32 -> int32
+    - uint64 -> int64
+    
+    This conversion is useful for compatibility with backends or frameworks that
+    expect signed integer indices for gather operations. The pass ensures that
+    the semantic meaning of the indices is preserved during the type conversion.
+    
+    For example:
+    - gather(operand, indices: tensor<4xui32>) -> gather(operand, indices: tensor<4xi32>)
+    - gather(operand, indices: tensor<2x3xui64>) -> gather(operand, indices: tensor<2x3xi64>)
+  }];
+  let dependentDialects = ["mlir::stablehlo::StablehloDialect"];
+}
