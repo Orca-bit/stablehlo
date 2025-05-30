@@ -1,4 +1,3 @@
-#include "llvm/ADT/SmallSet.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/IR/MLIRContext.h"
 #include "mlir/IR/PatternMatch.h"
@@ -183,11 +182,7 @@ struct SimplifyReshapeReducePattern
     }
 
     // 检查所有的reduce维度是否都是新添加的大小为1的维度
-    llvm::SmallSet<int64_t, 4> reduceDimSet(reduceDimensions.begin(),
-                                            reduceDimensions.end());
-    llvm::SmallSet<int64_t, 4> addedDimSet(addedDims.begin(), addedDims.end());
-
-    if (reduceDimSet != addedDimSet) {
+    if (addedDims.size() != 1 || addedDims[0] != reduceDimensions[0]) {
       // reduce的维度不完全是新添加的维度，无法简化
       return failure();
     }
@@ -196,7 +191,7 @@ struct SimplifyReshapeReducePattern
     // 移除reduce维度后的形状应该等于原始输入形状
     llvm::SmallVector<int64_t> expectedShape;
     for (size_t i = 0; i < reshapeShape.size(); ++i) {
-      if (!reduceDimSet.contains(i)) {
+      if (reduceDimensions[0] != static_cast<int64_t>(i)) {
         expectedShape.push_back(reshapeShape[i]);
       }
     }
